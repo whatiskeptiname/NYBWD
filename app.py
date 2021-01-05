@@ -3,12 +3,15 @@ from flask_jwt_extended import JWTManager
 from flask_restful import Api
 
 from resources.user import UserRegister, User, UserLogin, UserLogout, TokenRefresh, ME
+from resources.data import Mobilize, Stat
 from blacklist import BLACKLIST
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 app.config['SQLAlCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
+app.config['JWT_BLACKLIST_ENABLED'] = True
+app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
 app.secret_key = 'notNYBWD'
 api = Api(app)
 
@@ -63,6 +66,8 @@ api.add_resource(User, '/user/<int:user_id>')
 api.add_resource(UserLogout, '/logout')
 api.add_resource(TokenRefresh, '/refresh')
 api.add_resource(ME, '/me')
+api.add_resource(Mobilize, '/mobilize')
+api.add_resource(Stat, '/stat/<int:user_id>')
 
 if __name__ == '__main__':
     from db import db

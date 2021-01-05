@@ -80,8 +80,6 @@ class TokenRefresh(Resource):
     @jwt_refresh_token_required
     def post(self):
         current_user = get_jwt_identity()
-        jti = get_raw_jwt()['jti'] #jti is 'JWt ID , a unique identifier for a JWT.
-        BLACKLIST.add(jti)
         new_token = create_access_token(identity=current_user, fresh=False)
         return {'access_token': new_token}, 200
 
