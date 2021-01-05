@@ -3,7 +3,7 @@ from flask_jwt_extended import JWTManager
 from flask_restful import Api
 
 from resources.user import UserRegister, User, UserLogin, UserLogout, TokenRefresh, ME
-from resources.data import Mobilize, Stat
+from resources.mobilize import Mobilize, Stat
 from blacklist import BLACKLIST
 
 app = Flask(__name__)
@@ -72,4 +72,4 @@ api.add_resource(Stat, '/stat/<int:user_id>')
 if __name__ == '__main__':
     from db import db
     db.init_app(app)
-    app.run(port =9000, debug=True)
+    app.run(host='0.0.0.0',port =9000, debug=True)
