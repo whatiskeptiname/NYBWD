@@ -1,6 +1,7 @@
 from db import db
 
 
+
 class DataModel(db.Model):
     __tablename__='data'
 

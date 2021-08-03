@@ -1,19 +1,37 @@
 from flask import Flask, jsonify
+from flask_debugtoolbar import DebugToolbarExtension
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
+from flask_cors import CORS
 
-from resources.user import UserRegister, User, UserLogin, UserLogout, TokenRefresh, ME
-from resources.mobilize import Mobilize, Stat
+from resources.user import UserRegister, User, UserLogin, UserLogout, TokenRefresh, ME, Home
+from resources.mobilize import (
+    Mobilize,
+    Stat,
+    Proximity,
+    Position,
+    Bearing,
+    Autonomous,
+    Arm,
+    Turn,
+    Terminate,
+    PseudoAuto,
+    PseudoLocation
+)
 from blacklist import BLACKLIST
 
 app = Flask(__name__)
+app.debug = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 app.config['SQLAlCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 app.config['JWT_BLACKLIST_ENABLED'] = True
 app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
+app.config['CORS_HEADERS'] = 'application/json'
 app.secret_key = 'notNYBWD'
 api = Api(app)
+CORS(app)
+DebugToolbarExtension(app)
 
 @app.before_first_request
 def create_tables():
@@ -59,7 +77,7 @@ def token_not_fresh_callback():
         'error': "fresh_token_required"
     }), 401
 
-
+api.add_resource(Home, '/')
 api.add_resource(UserRegister, '/register')
 api.add_resource(UserLogin, '/login')
 api.add_resource(User, '/user/<int:user_id>')
@@ -67,6 +85,15 @@ api.add_resource(UserLogout, '/logout')
 api.add_resource(TokenRefresh, '/refresh')
 api.add_resource(ME, '/me')
 api.add_resource(Mobilize, '/mobilize')
+api.add_resource(Proximity, '/proximity')
+api.add_resource(Position, '/position')
+api.add_resource(Bearing, '/bearing')
+api.add_resource(Autonomous, '/autonomous')
+api.add_resource(PseudoAuto, '/pseudoauto')
+api.add_resource(PseudoLocation, '/pseudolocation')
+api.add_resource(Turn, '/turn')
+api.add_resource(Arm, '/arm')
+api.add_resource(Terminate, '/terminate')
 api.add_resource(Stat, '/stat/<int:user_id>')
 
 if __name__ == '__main__':
